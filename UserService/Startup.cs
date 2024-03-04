@@ -26,9 +26,6 @@ namespace UserService
                     .AddEnvironmentVariables().Build();
 
             var connStr = configuration.GetConnectionString("SystemDbConnectionString");
-            //builder.Services.AddDbContext<UserContext>(
-            //  option => option.UseSqlServer("Server=IN-LT-17539;Database=userservicedb;Trusted_Connection=True;"));
-
             builder.Services.AddDbContext<UserContext>(
               option => option.UseSqlServer(connStr));
             builder.Services.AddHttpClient();
