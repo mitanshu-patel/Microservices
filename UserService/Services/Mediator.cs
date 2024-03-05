@@ -1,5 +1,8 @@
 ﻿// Updated Mediator implementation
+using System;
+using System.Collections.Generic;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using UserService.Common;
 using UserService.Services;
@@ -30,13 +33,13 @@ public class Mediator : IMediator
         }
     }
 
-    public TResult Send<TCommand, TResult>(TCommand command) where TCommand : class
+    public async Task<TResult> SendAsync<TCommand, TResult>(TCommand command) where TCommand : class
     {
         var commandType = typeof(TCommand);
         if (_handlers.TryGetValue(commandType, out var methodInfo))
         {
             var handlerInstance = Activator.CreateInstance(methodInfo.DeclaringType);
-            return (TResult)methodInfo.Invoke(handlerInstance, new object[] { command });
+            return await (Task<TResult>)methodInfo.Invoke(handlerInstance, new object[] { command });
         }
         else
         {

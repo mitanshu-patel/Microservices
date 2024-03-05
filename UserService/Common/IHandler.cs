@@ -9,7 +9,7 @@ namespace UserService.Common
     // Updated IHandler interface
     public interface IHandler<TCommand, TResult> where TCommand : class
     {
-        TResult Handle(TCommand command);
+        Task<TResult> Handle(TCommand command);
     }
 
 }

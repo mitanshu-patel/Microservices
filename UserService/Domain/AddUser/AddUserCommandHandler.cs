@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UserService.Common;
 using UserService.Data;
+using UserService.Data.Entities;
 
 namespace UserService.Domain.AddUser
 {
@@ -19,9 +20,25 @@ namespace UserService.Domain.AddUser
             this.logger = logger;
         }
 
-        public CustomResponse<AddUserResult> Handle(AddUserCommand command)
+        public async Task<CustomResponse<AddUserResult>> Handle(AddUserCommand command)
         {
-            throw new NotImplementedException();
+            var user = new User
+            {
+                Name = command.Name,
+                Password = command.Password,
+                Email = command.Email,
+            };
+
+            this.dbContext.Users.Add(user);
+            await this.dbContext.SaveChangesAsync();
+
+            var result = new CustomResponse<AddUserResult>
+            {
+                Data = new AddUserResult(user.Id),
+                ResponseCode = System.Net.HttpStatusCode.OK,
+            };
+
+            return result;
         }
     }
 }
