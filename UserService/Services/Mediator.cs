@@ -1,4 +1,5 @@
 ﻿// Updated Mediator implementation
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -7,43 +8,20 @@ using System.Windows.Input;
 using UserService.Common;
 using UserService.Services;
 
+// Mediator
 public class Mediator : IMediator
 {
-    private readonly Dictionary<Type, MethodInfo> _handlers = new Dictionary<Type, MethodInfo>();
+    private readonly IServiceProvider _serviceProvider;
 
-    public void RegisterHandlers(Assembly assembly)
+    public Mediator(IServiceProvider serviceProvider)
     {
-        foreach (var type in assembly.GetTypes())
-        {
-            var interfaces = type.GetInterfaces();
-            foreach (var @interface in interfaces)
-            {
-                if (@interface.IsGenericType && @interface.GetGenericTypeDefinition() == typeof(IHandler<,>))
-                {
-                    var genericArguments = @interface.GetGenericArguments();
-                    var commandType = genericArguments[0];
-                    var resultType = genericArguments[1];
-                    var methodInfo = type.GetMethod("Handle", new[] { commandType });
-                    if (methodInfo != null)
-                    {
-                        _handlers[commandType] = methodInfo;
-                    }
-                }
-            }
-        }
+        _serviceProvider = serviceProvider;
     }
 
-    public async Task<TResult> SendAsync<TCommand, TResult>(TCommand command) where TCommand : class
+    public async Task<TResult> SendAsync<TCommand, TResult>(TCommand command) where TCommand: class
     {
-        var commandType = typeof(TCommand);
-        if (_handlers.TryGetValue(commandType, out var methodInfo))
-        {
-            var handlerInstance = Activator.CreateInstance(methodInfo.DeclaringType);
-            return await (Task<TResult>)methodInfo.Invoke(handlerInstance, new object[] { command });
-        }
-        else
-        {
-            throw new InvalidOperationException($"No handler registered for {commandType.Name}");
-        }
+        var handler = _serviceProvider.GetRequiredService<IHandler<TCommand, TResult>>();
+        return await handler.Handle(command);
     }
 }
+

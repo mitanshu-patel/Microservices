@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,32 +14,37 @@ namespace UserService.Domain.AddUser
     public class AddUserCommandHandler : IHandler<AddUserCommand, CustomResponse<AddUserResult>>
     {
         private readonly UserContext dbContext;
-        private readonly ILogger<AddUserCommandHandler> logger;
-        public AddUserCommandHandler(UserContext dbContext, ILogger<AddUserCommandHandler> logger)
+        public AddUserCommandHandler(UserContext dbContext)
         {
             this.dbContext = dbContext;
-            this.logger = logger;
         }
 
         public async Task<CustomResponse<AddUserResult>> Handle(AddUserCommand command)
         {
+            var isUserExist = await this.IsUserExist(command.Email);
+
+            if (isUserExist)
+            {
+                return CustomHttpResult.BadRequest<AddUserResult>("User Already Exists");
+            }
+
             var user = new User
             {
                 Name = command.Name,
-                Password = command.Password,
+                Password = command.Password.ComputeSHA256Hash(),
                 Email = command.Email,
+                MobileNo = command.Mobile,
             };
 
             this.dbContext.Users.Add(user);
             await this.dbContext.SaveChangesAsync();
 
-            var result = new CustomResponse<AddUserResult>
-            {
-                Data = new AddUserResult(user.Id),
-                ResponseCode = System.Net.HttpStatusCode.OK,
-            };
+            return CustomHttpResult.Ok(new AddUserResult(user.Id));
+        }
 
-            return result;
+        public async Task<bool> IsUserExist(string email)
+        {
+            return await this.dbContext.Users.AnyAsync(t => t.Email == email);
         }
     }
 }

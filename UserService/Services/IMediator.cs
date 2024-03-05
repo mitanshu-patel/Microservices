@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MediatR;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -9,7 +10,6 @@ namespace UserService.Services
 {
     public interface IMediator
     {
-        void RegisterHandlers(Assembly assembly);
         Task<TResult> SendAsync<TCommand, TResult>(TCommand command) where TCommand : class;
     }
 }

@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using UserService.Data;
@@ -29,6 +30,7 @@ namespace UserService
             builder.Services.AddDbContext<UserContext>(
               option => option.UseSqlServer(connStr));
             builder.Services.AddHttpClient();
+            builder.Services.RegisterHandlers(Assembly.GetExecutingAssembly());
             builder.Services.AddSingleton<IMediator, Mediator>();
             builder.Services.AddSingleton<IAuthenticationService, AuthenticationService>();
             builder.AddExtension<DbSeedConfigProvider>();

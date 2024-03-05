@@ -14,6 +14,7 @@ using Newtonsoft.Json;
 using UserService.Common;
 using UserService.Data;
 using UserService.Domain.AddUser;
+using UserService.Domain.AuthenticateUser;
 using UserService.Services;
 
 namespace UserService.Functions
@@ -33,7 +34,6 @@ namespace UserService.Functions
             _logger = log;
             this.authenticationService = authenticationService;
             this.mediator = mediator;
-            this.mediator.RegisterHandlers(Assembly.GetExecutingAssembly());
         }
 
         [FunctionName("AddUser")]
@@ -55,6 +55,21 @@ namespace UserService.Functions
             var data = JsonConvert.DeserializeObject<AddUserCommand>(requestBody);
             var result = await mediator.SendAsync<AddUserCommand, CustomResponse<AddUserResult>>(data);
             
+            return result.GetResponse();
+        }
+
+        [FunctionName("AuthenticateUser")]
+        [OpenApiOperation(operationId: "AuthenticateUser", tags: OpenApiTag)]
+        [OpenApiRequestBody("application/json", typeof(AuthenticateUserCommand))]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(AuthenticateUserResult), Description = "The OK response")]
+        public async Task<IActionResult> AuthenticateUser(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "v1/users/authenticate")] HttpRequest req)
+        {
+            _logger.LogInformation("C# HTTP trigger function processed a request for Authenticate User");
+            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+            var data = JsonConvert.DeserializeObject<AuthenticateUserCommand>(requestBody);
+            var result = await mediator.SendAsync<AuthenticateUserCommand, CustomResponse<AuthenticateUserResult>>(data);
+
             return result.GetResponse();
         }
     }
