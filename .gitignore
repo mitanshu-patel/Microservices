@@ -11,3 +11,7 @@
 /.vs/slnx.sqlite
 /.vs/Microservices/FileContentIndex
 /UserService/Properties/launchSettings.json
+/ProductService/ProductService/host.json
+/ProductService/ProductService/Properties/launchSettings.json
+/ProductService/ProductService/Properties/serviceDependencies.json
+/ProductService/ProductService/Properties/serviceDependencies.local.json
