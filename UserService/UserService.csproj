@@ -4,6 +4,7 @@
     <AzureFunctionsVersion>v4</AzureFunctionsVersion>
   </PropertyGroup>
   <ItemGroup>
+	<PackageReference Include="Azure.Messaging.ServiceBus" Version="7.17.4" />
 	<PackageReference Include="FluentValidation" Version="11.4.0" />
     <PackageReference Include="JWT" Version="10.0.2" />
     <PackageReference Include="MediatR" Version="12.2.0" />

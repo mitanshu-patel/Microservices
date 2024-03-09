@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UserService.Common;
 using UserService.Data;
+using UserService.Messages;
 using UserService.Services;
 
 namespace UserService.Domain.AuthenticateUser
@@ -15,12 +16,15 @@ namespace UserService.Domain.AuthenticateUser
     {
         private readonly UserContext dbContext;
         private readonly IAuthenticationService authenticationService;
+        private readonly IMessageDeliveryService messageDeliveryService;
 
 
-        public AuthenticateUserHandler(UserContext dbContext, IAuthenticationService authenticationService)
+        public AuthenticateUserHandler(UserContext dbContext, IAuthenticationService authenticationService, IMessageDeliveryService messageDeliveryService)
         {
             this.dbContext = dbContext;
             this.authenticationService = authenticationService;
+            this.messageDeliveryService = messageDeliveryService;
+
         }
         public async Task<CustomResponse<AuthenticateUserResult>> Handle(AuthenticateUserCommand command)
         {
@@ -43,6 +47,8 @@ namespace UserService.Domain.AuthenticateUser
             }
 
             var token = this.authenticationService.IssueJWT(user.Email);
+
+            await this.messageDeliveryService.PublishMessageAsync(new UserTokenUpdated(user.Email, token), "userserviceevents");
 
             return CustomHttpResult.Ok(new AuthenticateUserResult(token));
         }

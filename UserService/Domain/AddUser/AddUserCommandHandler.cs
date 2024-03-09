@@ -8,15 +8,19 @@ using System.Threading.Tasks;
 using UserService.Common;
 using UserService.Data;
 using UserService.Data.Entities;
+using UserService.Messages;
+using UserService.Services;
 
 namespace UserService.Domain.AddUser
 {
     public class AddUserCommandHandler : IHandler<AddUserCommand, CustomResponse<AddUserResult>>
     {
         private readonly UserContext dbContext;
-        public AddUserCommandHandler(UserContext dbContext)
+        private readonly IMessageDeliveryService messageDeliveryService;
+        public AddUserCommandHandler(UserContext dbContext, IMessageDeliveryService messageDeliveryService)
         {
             this.dbContext = dbContext;
+            this.messageDeliveryService = messageDeliveryService;
         }
 
         public async Task<CustomResponse<AddUserResult>> Handle(AddUserCommand command)
@@ -39,6 +43,7 @@ namespace UserService.Domain.AddUser
             this.dbContext.Users.Add(user);
             await this.dbContext.SaveChangesAsync();
 
+            await this.messageDeliveryService.PublishMessageAsync(new UserDetailUpdated(user.Id, user.Name, user.Email, user.MobileNo), "userserviceevents");
             return CustomHttpResult.Ok(new AddUserResult(user.Id));
         }
 
