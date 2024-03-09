@@ -10,7 +10,7 @@ namespace ProductService.Services
 {
     public interface IAuthenticationService
     {
-        string IssueJWT(string user);
+        void AddToken(string user, string token);
 
         JWTResult ValidateToken(HttpRequest request);
     }

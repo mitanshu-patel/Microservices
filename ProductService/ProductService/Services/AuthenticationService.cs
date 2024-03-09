@@ -16,35 +16,8 @@ namespace ProductService.Services
     
     public class AuthenticationService : IAuthenticationService
     {
-        private readonly IJwtAlgorithm _algorithm;
-        private readonly IJsonSerializer _serializer;
-        private readonly IBase64UrlEncoder _base64Encoder;
-        private readonly IJwtEncoder _jwtEncoder;
         public AuthenticationService()
         {
-            // JWT specific initialization.
-            _algorithm = new HMACSHA256Algorithm();
-            _serializer = new JsonNetSerializer();
-            _base64Encoder = new JwtBase64UrlEncoder();
-            _jwtEncoder = new JwtEncoder(_algorithm, _serializer, _base64Encoder);
-        }
-        public string IssueJWT(string user)
-        {
-            var authSecret = Environment.GetEnvironmentVariable("AuthSecret");
-            var token = TokenDetails.GetExistingToken(user);
-            if (string.IsNullOrEmpty(token))
-            {
-                Dictionary<string, object> claims = new Dictionary<string, object> {
-                    // JSON representation of the user Reference with ID and display name
-                    {
-                        "username",
-                        user
-                    }
-                 };
-                token = _jwtEncoder.Encode(claims, authSecret); // Put this key in config
-                TokenDetails.AddTokenDetails(user, token);
-            }
-            return token;
         }
 
         public JWTResult ValidateToken(HttpRequest request)
@@ -107,6 +80,11 @@ namespace ProductService.Services
                 }
             }
             return result;
+        }
+
+        public void AddToken(string user, string token)
+        {
+            TokenDetails.AddTokenDetails(user, token);
         }
     }
 }
