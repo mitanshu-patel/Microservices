@@ -43,7 +43,7 @@ namespace UserService.Domain.AddUser
             this.dbContext.Users.Add(user);
             await this.dbContext.SaveChangesAsync();
 
-            await this.messageDeliveryService.PublishMessageAsync(new UserDetailUpdated(user.Id, user.Name, user.Email, user.MobileNo), "userserviceevents");
+            //await this.messageDeliveryService.PublishMessageAsync(new UserDetailUpdated(user.Id, user.Name, user.Email, user.MobileNo), "userserviceevents");
             return CustomHttpResult.Ok(new AddUserResult(user.Id));
         }
 

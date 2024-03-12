@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProductService.Domain.Products.AddProduct
+namespace ProductService.Domain.Products.GetProducts
 {
-    public record AddProductResult(int ProductId);
+    public record GetProductsQuery;
 }
