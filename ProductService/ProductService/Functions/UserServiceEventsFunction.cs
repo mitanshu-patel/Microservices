@@ -12,11 +12,11 @@ namespace ProductService.Functions
 {
     public class UserServiceEventsFunction
     {
-        private readonly ILogger<ProductsFunction> _logger;
+        private readonly ILogger<UserServiceEventsFunction> _logger;
 
         private readonly IMediator mediator;
 
-        public UserServiceEventsFunction(IMediator mediator, ILogger<ProductsFunction> _logger)
+        public UserServiceEventsFunction(IMediator mediator, ILogger<UserServiceEventsFunction> _logger)
         {
             this.mediator = mediator;
             this._logger = _logger;
