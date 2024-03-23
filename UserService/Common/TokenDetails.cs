@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ViImpexService.Domain.Common
+namespace UserService.Domain.Common
 {
     public static class TokenDetails
     {
