@@ -32,6 +32,7 @@ namespace ProductService
             builder.Services.AddHttpClient();
             builder.Services.RegisterHandlers(Assembly.GetExecutingAssembly());
             builder.Services.AddSingleton<IMediator, Mediator>();
+            builder.Services.AddSingleton<IMessageDeliveryService, MessageDeliveryService>();
             builder.Services.AddSingleton<IAuthenticationService, AuthenticationService>();
             builder.AddExtension<DbSeedConfigProvider>();
         }

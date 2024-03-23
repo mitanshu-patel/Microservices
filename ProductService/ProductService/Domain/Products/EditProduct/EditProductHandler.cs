@@ -35,7 +35,7 @@ namespace ProductService.Domain.Products.EditProduct
             dbContext.Entry(product).State = EntityState.Modified;
             await this.dbContext.SaveChangesAsync();
 
-            await this.messageDeliveryService.PublishMessageAsync(new ProductDetailUpdated(product.Id, product.Name, product.Description, product.Price), "productevents");
+            await this.messageDeliveryService.PublishMessageAsync(new ProductDetailUpdated(product.Id, product.Name, product.Description, product.Price), "productserviceevents");
             return CustomHttpResult.Ok(new EditProductResult());
         }
     }

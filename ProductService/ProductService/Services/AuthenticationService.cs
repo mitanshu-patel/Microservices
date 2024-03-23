@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ProductService.Common;
 using JWT.Serializers;
-using ViImpexService.Domain.Common;
+using ProductService.Domain.Common;
 using JWT.Builder;
 
 namespace ProductService.Services
