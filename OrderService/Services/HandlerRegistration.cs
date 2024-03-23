@@ -5,9 +5,9 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using ProductService.Common;
+using OrderService.Common;
 
-namespace ProductService.Services
+namespace OrderService.Services
 {
     public static class HandlerRegistration
     {

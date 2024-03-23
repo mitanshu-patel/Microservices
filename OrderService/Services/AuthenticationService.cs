@@ -11,7 +11,7 @@ using JWT.Serializers;
 using OrderService.Domain.Common;
 using JWT.Builder;
 
-namespace ProductService.Services
+namespace OrderService.Services
 {
     
     public class AuthenticationService : IAuthenticationService
