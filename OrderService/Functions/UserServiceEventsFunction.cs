@@ -4,6 +4,7 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Logging;
 using OrderService.Common;
+using OrderService.Domain.Messaging.UserDetailUpdated;
 using OrderService.Domain.Messaging.UserTokenEvent;
 using OrderService.Services;
 using UserService.Messages;
@@ -30,6 +31,13 @@ namespace OrderService.Functions
             {
                 var request = JsonSerializer.Deserialize<UserTokenUpdated>(response.Data.ToString());
                 this.mediator.SendAsync<UserTokenEventCommand, CustomResponse<UserTokenEventResult>>(new UserTokenEventCommand(request));
+                this._logger.LogInformation($"C# ServiceBus topic trigger function processed message: {mySbMsg}");
+            }
+
+            if (response.FullName == typeof(UserDetailUpdated).FullName)
+            {
+                var request = JsonSerializer.Deserialize<UserDetailUpdated>(response.Data.ToString());
+                this.mediator.SendAsync<UserDetailUpdatedCommand, CustomResponse<UserDetailUpdatedResult>>(new UserDetailUpdatedCommand(request));
                 this._logger.LogInformation($"C# ServiceBus topic trigger function processed message: {mySbMsg}");
             }
         }
