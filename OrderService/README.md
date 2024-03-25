@@ -1,3 +1,7 @@
+## API Endpoints Overview
+
+This section provides details about the main endpoints of the OrderService API, including functionality descriptions, request/response formats, and endpoint URLs.
+
 1) **AddOrder**
    - **Description:** This endpoint adds a new order.
    - **Endpoint:** `/api/orderservice/orders`
