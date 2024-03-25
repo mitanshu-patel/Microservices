@@ -60,7 +60,8 @@ This section outlines the main endpoints provided by the ProductService API, inc
 
 4) **UpdateProduct**
    - **Description:** This endpoint updates the details of an existing product.
-   - **Endpoint:** `/api/productservice/products`
+   - **Endpoint:** `/api/productservice/products/productId`
+   - **Parameters:** productId:int
    - **Verb:** PUT
    - **Request:**
      ```json
