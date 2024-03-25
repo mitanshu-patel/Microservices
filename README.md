@@ -50,10 +50,4 @@ To set up and run the microservice Azure Function app locally, follow these step
 
 ## Contributors
 
-- [Your Name]
-- [Contributor 2]
-- [Contributor 3]
-
-## License
-
-This project is licensed under the [MIT License](LICENSE).
+- Mitanshu Patel
