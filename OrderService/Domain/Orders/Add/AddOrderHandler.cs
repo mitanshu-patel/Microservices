@@ -27,6 +27,14 @@ namespace OrderService.Domain.Orders.Add
                 Price = v.Price
             }).ToListAsync();
 
+            var existingProductIds = productPrices.Select(t => t.Id).ToList();
+            var invalidProductExist = productIds.Any(t => !existingProductIds.Contains(t));
+
+            if (invalidProductExist)
+            {
+                return CustomHttpResult.BadRequest<AddOrderResult>("Order contains one or more invalid products, please try again");
+            }
+
             var totalPrice = 0m;
             foreach(var productPrice in productPrices)
             {

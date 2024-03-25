@@ -12,6 +12,8 @@ using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using OrderService.Common;
 using OrderService.Domain.Orders.Add;
+using OrderService.Domain.Orders.Get;
+using OrderService.Domain.Orders.GetUserOrders;
 using OrderService.Services;
 
 namespace OrderService.Functions
@@ -50,6 +52,46 @@ namespace OrderService.Functions
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             var data = JsonConvert.DeserializeObject<AddOrderCommand>(requestBody);
             var result = await mediator.SendAsync<AddOrderCommand, CustomResponse<AddOrderResult>>(data);
+
+            return result.GetResponse();
+        }
+
+        [FunctionName("GetOrder")]
+        [OpenApiOperation(operationId: "GetOrder", tags: OpenApiTag)]
+        [OpenApiSecurity("BearerAuth", SecuritySchemeType.ApiKey, In = OpenApiSecurityLocationType.Header, Name = "Authorization")]
+        [OpenApiParameter("orderId", Type = typeof(int), Visibility = OpenApiVisibilityType.Important, Required = true)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(GetOrderDetailsResult), Description = "Gets existing order details")]
+        public async Task<IActionResult> GetOrder(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "v1/orders/{orderId:int}")] HttpRequest req, int orderId)
+        {
+            _logger.LogInformation("C# HTTP trigger function processed a request for Get Order");
+            var authResult = this.authenticationService.ValidateToken(req);
+            if (!authResult.IsValid)
+            {
+                _logger.LogInformation("User unauthorized");
+                return new UnauthorizedResult(); // No authentication info.
+            }
+            var result = await mediator.SendAsync<GetOrderDetailsQuery, CustomResponse<GetOrderDetailsResult>>(new GetOrderDetailsQuery(orderId));
+
+            return result.GetResponse();
+        }
+
+        [FunctionName("GetUserOrders")]
+        [OpenApiOperation(operationId: "GetUserOrders", tags: OpenApiTag)]
+        [OpenApiSecurity("BearerAuth", SecuritySchemeType.ApiKey, In = OpenApiSecurityLocationType.Header, Name = "Authorization")]
+        [OpenApiParameter("userId", Type = typeof(int), Visibility = OpenApiVisibilityType.Important, Required = true)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(GetUserOrdersResult), Description = "Gets list of orders for given userid.")]
+        public async Task<IActionResult> GetUserOrders(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "v1/users/{userId:int}/orders")] HttpRequest req, int userId)
+        {
+            _logger.LogInformation("C# HTTP trigger function processed a request for Get User Orders");
+            var authResult = this.authenticationService.ValidateToken(req);
+            if (!authResult.IsValid)
+            {
+                _logger.LogInformation("User unauthorized");
+                return new UnauthorizedResult(); // No authentication info.
+            }
+            var result = await mediator.SendAsync<GetUserOrdersQuery, CustomResponse<GetUserOrdersResult>>(new GetUserOrdersQuery(userId));
 
             return result.GetResponse();
         }
