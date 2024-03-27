@@ -49,12 +49,7 @@ namespace UserService.Functions
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "v1/users")] HttpRequest req)
         {
             _logger.LogInformation("C# HTTP trigger function processed a request for Add User");
-            var authResult = this.authenticationService.ValidateToken(req);
-            if (!authResult.IsValid)
-            {
-                _logger.LogInformation("User unauthorized");
-                return new UnauthorizedResult(); // No authentication info.
-            }
+           
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             var data = JsonConvert.DeserializeObject<AddUserCommand>(requestBody);
             var result = await mediator.SendAsync<AddUserCommand, CustomResponse<AddUserResult>>(data);
