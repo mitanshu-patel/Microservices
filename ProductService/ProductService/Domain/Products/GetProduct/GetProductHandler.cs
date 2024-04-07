@@ -22,7 +22,7 @@ namespace ProductService.Domain.Products.GetProduct
         public async Task<CustomResponse<GetProductResult>> Handle(GetProductQuery command)
         {
             var product = await this.dbContext.Products.Where(t => t.Id == command.ProductId)
-                                                        .Select(v => new ProductDetailDto(v.Id, v.Name, v.Description, v.Price))
+                                                        .Select(v => new ProductDetailDto(v.Id, v.Name, v.Description, v.Price, v.ImageUrl))
                                                         .FirstOrDefaultAsync();
 
             if(product == null)

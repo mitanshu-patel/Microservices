@@ -19,7 +19,7 @@ namespace ProductService.Domain.Products.GetProducts
         }
         public async Task<CustomResponse<GetProductsResult>> Handle(GetProductsQuery command)
         {
-            var products = await this.dbContext.Products.Select(t => new ProductDetailDto(t.Id, t.Name, t.Description, t.Price)).ToListAsync();
+            var products = await this.dbContext.Products.Select(t => new ProductDetailDto(t.Id, t.Name, t.Description, t.Price, t.ImageUrl)).ToListAsync();
 
             return CustomHttpResult.Ok(new GetProductsResult(products));
         }

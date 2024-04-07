@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace ProductService.Domain.Products.Common.DTOs
 {
-    public record ProductDetailDto(int ProductId, string Name, string Description, decimal Price);
+    public record ProductDetailDto(int ProductId, string Name, string Description, decimal Price, string ImageUrl);
 }
