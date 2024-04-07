@@ -31,7 +31,7 @@ namespace UserService.Domain.AuthenticateUser
             var user = await this.dbContext.Users.Where(t => t.Email == command.email).FirstOrDefaultAsync();
             var result = new CustomResponse<AuthenticateUserResult>()
             {
-                Data = new AuthenticateUserResult(string.Empty),
+                Data = new AuthenticateUserResult(string.Empty, string.Empty),
             };
 
             if(user == null)
@@ -50,7 +50,7 @@ namespace UserService.Domain.AuthenticateUser
 
             await this.messageDeliveryService.PublishMessageAsync(new UserTokenUpdated(user.Email, token), "userserviceevents");
 
-            return CustomHttpResult.Ok(new AuthenticateUserResult(token));
+            return CustomHttpResult.Ok(new AuthenticateUserResult(token, user.Name));
         }
 
         

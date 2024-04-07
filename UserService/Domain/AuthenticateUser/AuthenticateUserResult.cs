@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace UserService.Domain.AuthenticateUser
 {
-    public record AuthenticateUserResult(string Token);
+    public record AuthenticateUserResult(string Token, string UserName);
 }
