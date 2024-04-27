@@ -81,18 +81,12 @@ namespace ProductService.Functions
 
         [FunctionName("GetProducts")]
         [OpenApiOperation(operationId: "GetProducts", tags: OpenApiTag)]
-        [OpenApiSecurity("BearerAuth", SecuritySchemeType.ApiKey, In = OpenApiSecurityLocationType.Header, Name = "Authorization")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(GetProductsResult), Description = "Gets list of products")]
         public async Task<IActionResult> GetProducts(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "v1/products")] HttpRequest req)
         {
             _logger.LogInformation("C# HTTP trigger function processed a request for Get Products");
-            var authResult = this.authenticationService.ValidateToken(req);
-            if (!authResult.IsValid)
-            {
-                _logger.LogInformation("User unauthorized");
-                return new UnauthorizedResult(); // No authentication info.
-            }
+           
             var result = await mediator.SendAsync<GetProductsQuery, CustomResponse<GetProductsResult>>(new GetProductsQuery());
 
             return result.GetResponse();
